@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UniVote — BCA Complaint & Voting Platform</title>
+  <meta name="description" content="UniVote — The official BCA student complaint & voting platform.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- ===== TOP NAV ===== -->
+  <nav id="mainNav">
+    <div class="logo-wrapper"
+      onclick="if(document.getElementById('pg-app').classList.contains('on')) gTab('dashboard'); else gLoginTab('login');">
+      <div class="logo-3d"><img src="UV.jpg" alt="UniVote Logo" class="uv-img-logo"></div>
+      <div class="logo-wordmark">
+        <div class="logo-text">UniVote</div>
+        <div class="logo-sub">BCA Voting System</div>
+      </div>
+    </div>
+
+    <div class="nav-mid" id="navMid">
+      <div id="nav-login-links" style="display:flex;gap:.1rem">
+        <button class="nb on" id="nl-login" onclick="gLoginTab('login')">Login to UniVote</button>
+        <button class="nb" id="nl-about" onclick="gLoginTab('about')">About</button>
+      </div>
+      <div id="nav-app-links" style="display:none;gap:.1rem">
+        <button class="nb on" id="nb-dashboard" onclick="gTab('dashboard')">Dashboard</button>
+        <button class="nb" id="nb-issues" onclick="gTab('issues')">Issues</button>
+        <button class="nb" id="nb-post" onclick="gTab('post')">Post Issue</button>
+        <button class="nb" id="nb-about" onclick="gTab('about')">About</button>
+        <button class="nb" id="nb-staff" style="display:none" onclick="gTab('staff')">Staff Panel</button>
+      </div>
+    </div>
+
+    <div class="nav-r" id="navR">
+      <div class="user-chip" id="userChip" onclick="toggleProfileMenu(event)">
+        <div class="user-avatar" id="userAvatar">#</div>
+        <div class="profile-menu" id="profileMenu" onclick="event.stopPropagation()">
+          <div class="pm-user-info">
+            <div class="pm-avatar-big" id="pm-avatar-big">#</div>
+            <div class="pm-details">
+              <div class="pm-username" id="pm-username">Username</div>
+              <div class="pm-role" id="pm-role">Student</div>
+            </div>
+          </div>
+          <div class="pm-content">
+            <div class="pm-left">
+              <div class="pm-title">Choose Avatar</div>
+              <div class="avatar-grid" id="avatarGrid"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="hamburger" id="hamburger" onclick="toggleMobileNav()">☰</button>
+  </nav>
+
+  <div class="mobile-drawer" id="mobileDrawer">
+    <div id="mob-login-links">
+      <button class="mob-nb on" onclick="gLoginTab('login');closeMobileNav()">Login</button>
+      <button class="mob-nb" onclick="gLoginTab('about');closeMobileNav()">About</button>
+    </div>
+    <div id="mob-app-links" style="display:none">
+      <button class="mob-nb on" onclick="gTab('dashboard');closeMobileNav()">Dashboard</button>
+      <button class="mob-nb" onclick="gTab('issues');closeMobileNav()">Issues</button>
+      <button class="mob-nb" id="mob-post" onclick="gTab('post');closeMobileNav()">Post Issue</button>
+      <button class="mob-nb" onclick="gTab('about');closeMobileNav()">About</button>
+      <button class="mob-nb" id="mob-staff" style="display:none" onclick="gTab('staff');closeMobileNav()">Staff
+        Panel</button>
+      <div class="drawer-sep"></div>
+      <button class="logout-btn full-w" onclick="logout();closeMobileNav()">Sign Out</button>
+    </div>
+  </div>
+  <div class="drawer-overlay" id="drawerOverlay" onclick="closeMobileNav()"></div>
+
+
+
+  <div class="page on" id="pg-public">
+    <div class="pub-tab on" id="pt-login">
+      <div class="login-bg">
+        <div class="login-center">
+          <div class="login-header">
+            <h1 class="lh-title"><span class="grad-text">UniVote</span></h1>
+            <p class="lh-subtitle">BCA Complaint &amp; Voting Platform</p>
+          </div>
+
+          <div class="login-card">
+            <div class="animcon" id="loginMonkey">
+              <img src="images/hands.png" id="loginHands" alt="hands">
+            </div>
+            <div class="fg">
+              <label for="loginId">Student ID</label>
+              <div class="input-wrap">
+                <input class="fi" id="loginId" placeholder="bcaclass@42" autocomplete="off"
+                  onkeydown="if(event.key==='Enter')doLogin()">
+              </div>
+              <div class="field-hint">Format: <strong>bcaclass@1</strong> to <strong>bcaclass@500</strong></div>
+            </div>
+            <div class="fg">
+              <label for="loginPass">Password</label>
+              <div class="input-wrap">
+                <input class="fi" id="loginPass" type="password" placeholder="Enter your password"
+                  onfocus="closeye('loginMonkey')" onblur="if(!this.value) openeye('loginMonkey')"
+                  oninput="closeye('loginMonkey')" onkeydown="if(event.key==='Enter')doLogin()">
+                <button class="pw-toggle" onclick="togglePw('loginPass',this)"
+                  style="font-size: .75rem; font-weight:700" type="button">SHOW</button>
+              </div>
+              <div class="field-hint">Default: same as your Student ID</div>
+            </div>
+            <div class="lerr" id="lerr"></div>
+            <button class="btn-login" id="loginBtn" onclick="doLogin()">Login</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pub-tab" id="pt-about">
+      <div class="pub-about-container">
+        <div class="about-wrap">
+          <div class="about-hero">
+            <div class="hero-badge">Site Version 1.0</div>
+            <h2>UNI<span class="grad-text">VOTE</span></h2>
+            <p>A transparent, crowd-powered platform for BCA students to raise real campus problems, vote for the most
+              urgent ones, and hold administration accountable.</p>
+            <div class="founder-credit">
+              Founded by <strong>Muhammad Fayis KK</strong>
+            </div>
+          </div>
+          <div class="about-grid">
+            <div class="about-card">
+              <h4>Crowd Voting</h4>
+              <p>Every student gets one vote per issue. High votes trigger automatic staff alerts.</p>
+            </div>
+            <div class="about-card">
+              <h4>AI Merge</h4>
+              <p>Detects similar complaints and merges them for stronger impact.</p>
+            </div>
+            <div class="about-card">
+              <h4>Live Alerts</h4>
+              <p>30+ votes triggers urgent alarms on the Staff Panel.</p>
+            </div>
+            <div class="about-card">
+              <h4>Resolution Rating</h4>
+              <p>Rate how well issues were resolved.</p>
+            </div>
+            <div class="about-card">
+              <h4>Secure Access</h4>
+              <p>Only registered BCA students and authorized staff can log in.</p>
+            </div>
+            <div class="about-card">
+              <h4>Real-Time Tracking</h4>
+              <p>Every issue shows Open → In Progress → Solved lives.</p>
+            </div>
+          </div>
+          <div class="how-card">
+            <h4>How It Works</h4>
+            <div class="how-steps">
+              <div class="how-step">
+                <div class="step-num">01</div>
+                <div><strong>Sign In</strong>
+                  <p>Use your BCA Student ID. Set a new password on first login.</p>
+                </div>
+              </div>
+              <div class="how-step">
+                <div class="step-num">02</div>
+                <div><strong>Report</strong>
+                  <p>Post an issue with title, category, location & description. AI checks for duplicates.</p>
+                </div>
+              </div>
+              <div class="how-step">
+                <div class="step-num">03</div>
+                <div><strong>Vote</strong>
+                  <p>Vote for issues affecting you. 30+ votes triggers urgent staff alerts.</p>
+                </div>
+              </div>
+              <div class="how-step">
+                <div class="step-num">04</div>
+                <div><strong>Rate</strong>
+                  <p>Once resolved, rate the resolution for full accountability.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="about-footer">UniVote · BCA Department · Version 1.0</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="pwOverlay">
+    <div class="modal">
+      <div class="animcon" id="modalMonkey" style="margin: -50px auto 20px auto; transform: scale(0.9);">
+        <img src="images/hands.png" id="modalHands" alt="hands">
+      </div>
+      <h2>Set Your Password</h2>
+      <p class="sub">First login! Create a <strong>new secure password</strong>.</p>
+      <div class="pw-req">
+        <strong>Rule:</strong> 8+ chars · include a number
+      </div>
+      <div class="fg">
+        <label>New Password</label>
+        <div class="input-wrap">
+          <input class="fi" id="newPw" type="password" placeholder="Create new password"
+            oninput="checkStrength(this.value);" onfocus="closeye('modalMonkey')"
+            onblur="if(!this.value && !document.getElementById('confPw').value) openeye('modalMonkey')">
+          <button class="pw-toggle" onclick="togglePw('newPw',this)" style="font-size: .75rem; font-weight:700"
+            type="button">SHOW</button>
+        </div>
+        <div class="pw-strength">
+          <div class="ps-bar">
+            <div class="ps-fill" id="psFill"></div>
+          </div>
+          <span class="ps-label" id="psLabel">Enter a password</span>
+        </div>
+      </div>
+      <div class="fg">
+        <label>Confirm Password</label>
+        <div class="input-wrap">
+          <input class="fi" id="confPw" type="password" placeholder="Re-enter password"
+            onkeydown="if(event.key==='Enter')changePw()" onfocus="closeye('modalMonkey')"
+            onblur="if(!this.value && !document.getElementById('newPw').value) openeye('modalMonkey')">
+          <button class="pw-toggle" onclick="togglePw('confPw',this)" style="font-size: .75rem; font-weight:700"
+            type="button">SHOW</button>
+        </div>
+      </div>
+      <div class="pw-err" id="pwErr"></div>
+      <button class="btn-login" style="margin-top:.5rem" onclick="changePw()">Set Password &amp; Continue</button>
+    </div>
+  </div>
+
+  <div class="page" id="pg-app">
+    <div class="ac">
+      <div class="ts on" id="ts-dashboard">
+        <div class="sh">
+          <h2>Campus Dashboard</h2>
+          <p>Live snapshot of all reported issues and votes</p>
+        </div>
+        <div id="apanel" class="alarm-panel">
+          <div class="alarm-title"><span class="alarm-pulse"></span>URGENT — Staff Action Required</div>
+          <div class="alarm-items" id="aItems"></div>
+        </div>
+        <div class="srow" id="srow"></div>
+        <div class="section-label">Top Voted Problems</div>
+        <div class="tv" id="tvList">
+          <div class="empty-state">
+            <div class="es-title">No Issues Yet</div>
+            <p class="es-text">Be the first to report a campus issue!</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="ts" id="ts-issues">
+        <div class="sh">
+          <h2>All Issues</h2>
+          <p>Browse, filter and vote for campus problems</p>
+        </div>
+        <div class="sb"><input class="si" id="srch" placeholder="Search issues..." oninput="renderIssues()"></div>
+        <div class="fb">
+          <button class="fc on" onclick="setF('all',this)">All</button>
+          <button class="fc" onclick="setF('Infrastructure',this)">Infrastructure</button>
+          <button class="fc" onclick="setF('Academics',this)">Academics</button>
+          <button class="fc" onclick="setF('Canteen',this)">Canteen</button>
+          <button class="fc" onclick="setF('Hostel',this)">Hostel</button>
+          <button class="fc" onclick="setF('Sports',this)">Sports</button>
+          <button class="fc" onclick="setF('Safety',this)">Safety</button>
+          <button class="fc" onclick="setF('Other',this)">Other</button>
+          <button class="fc" onclick="setF('open',this)">Open</button>
+          <button class="fc" onclick="setF('in-progress',this)">Progress</button>
+          <button class="fc" onclick="setF('solved',this)">Solved</button>
+        </div>
+        <div class="il" id="iList">
+          <div class="empty-state">
+            <div class="es-title">No Issues Yet</div>
+            <p class="es-text">Post the first complaint!</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="ts" id="ts-post">
+        <div class="pf-wrap">
+          <div class="sh">
+            <h2>Report an Issue</h2>
+            <p>AI checks for similar complaints and merges duplicates automatically.</p>
+          </div>
+          <div class="post-card">
+            <div class="ff"><label>Issue Title *</label><input id="pT"
+                placeholder="e.g. Canteen food quality is very poor"></div>
+            <div class="form-row">
+              <div class="ff"><label>Category *</label>
+                <select id="pC">
+                  <option value="">— Select —</option>
+                  <option>Infrastructure</option>
+                  <option>Academics</option>
+                  <option>Canteen</option>
+                  <option>Hostel</option>
+                  <option>Sports</option>
+                  <option>Safety</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <div class="ff"><label>Location *</label><input id="pL" placeholder="e.g. Block A Room 101"></div>
+            </div>
+            <div class="ff">
+              <label>Description * <span class="label-note">(max 280 chars)</span></label>
+              <textarea id="pD" maxlength="280" placeholder="When did it start? How does it affect students?"
+                oninput="document.getElementById('ccnt').textContent=this.value.length;updateCharBar()"></textarea>
+              <div class="cc-wrap">
+                <div class="char-bar">
+                  <div class="char-fill" id="charFill"></div>
+                </div>
+                <div class="cc"><span id="ccnt">0</span>/280</div>
+              </div>
+            </div>
+            <div class="ai-notice" id="aiN">
+              <div><strong>AI Merged:</strong> Similar issue "<span id="merT"></span>" already exists with <span
+                  id="merV"></span> votes. Your vote was added.</div>
+            </div>
+            <button class="btn-submit" id="subBtn" onclick="postIssue()">Submit Issue</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="ts" id="ts-staff">
+        <div class="sp-wrap">
+          <div class="sh">
+            <h2>Staff Panel</h2>
+            <p>Manage and update issue statuses</p>
+          </div>
+          <div id="sapanel" class="alarm-panel">
+            <div class="alarm-title"><span class="alarm-pulse"></span>URGENT — High Vote Issues Need Attention</div>
+            <div class="alarm-items" id="saItems"></div>
+          </div>
+          <div id="sIList"></div>
+        </div>
+      </div>
+
+      <div class="ts" id="ts-about">
+        <div id="app-about-placeholder"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="rat-overlay" id="ratOv">
+    <div class="rat-modal">
+      <button class="mclose" onclick="closeRat()">✕</button>
+      <h3>Rate Resolution</h3>
+      <p class="rat-issue" id="ratTitle"></p>
+      <p>How satisfied are you with the resolution?</p>
+      <div class="stars" id="stars">
+        <span class="star" onclick="setStar(1)">★</span>
+        <span class="star" onclick="setStar(2)">★</span>
+        <span class="star" onclick="setStar(3)">★</span>
+        <span class="star" onclick="setStar(4)">★</span>
+        <span class="star" onclick="setStar(5)">★</span>
+      </div>
+      <div class="star-label" id="starLabel">Tap to rate</div>
+      <textarea class="rat-ta" id="ratCmt" placeholder="Optional comment..."></textarea>
+      <button class="btn-submit" onclick="submitRat()">Submit Rating</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+
+
+  <script src="script.js"></script>
+</body>
+
+</html>
